@@ -17,17 +17,14 @@ const FormInput = (props: FormInputProps) => {
         {label || name}
       </Label>
       <Input
-        type={name}
+        type={type}
         id={name}
-        name={type}
+        name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
         required
       />
     </div>
   );
-  {
-    name;
-  }
 };
 export default FormInput;
