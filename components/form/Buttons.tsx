@@ -8,7 +8,7 @@ type SubmitButtonProps = {
   text?: string;
 };
 
-const SubmitButton = ({
+export const SubmitButton = ({
   className = "",
   text = "submit",
 }: SubmitButtonProps) => {
@@ -31,4 +31,3 @@ const SubmitButton = ({
     </Button>
   );
 };
-export default SubmitButton;
