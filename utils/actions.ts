@@ -83,17 +83,25 @@ export const updateProfileAction = async (
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const validatedFields = profileSchema.parse(rawData);
+    const validatedFields = profileSchema.safeParse(rawData);
+
+    console.log("validatedFields.error", validatedFields.error);
+
+    if (!validatedFields.success) {
+      const errors = validatedFields.error.errors.map((error) => error.message);
+      throw new Error(errors.join(", "));
+    }
 
     await db.profile.update({
       where: {
         clerkId: user.id,
       },
-      data: validatedFields,
+      data: validatedFields.data,
     });
     revalidatePath("/profile");
     return { message: "Profile updated successfully" };
   } catch (error) {
+    console.error("safeParse 실행 중 오류 발생:", error);
     return renderError(error);
   }
 };
