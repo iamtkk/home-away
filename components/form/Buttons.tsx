@@ -8,7 +8,7 @@ type btnSize = "default" | "sm" | "lg";
 type SubmitButtonProps = {
   className?: string;
   text?: string;
-  size: btnSize;
+  size?: btnSize;
 };
 
 export const SubmitButton = ({
