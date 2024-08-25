@@ -123,3 +123,13 @@ export const updateProfileImageAction = async (
     return renderError(error);
   }
 };
+
+export const createPropertyAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
+  try {
+    const rawDate = Object.fromEntries(formData);
+  } catch (error) {}
+};
