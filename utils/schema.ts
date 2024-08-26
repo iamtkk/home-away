@@ -32,14 +32,15 @@ export const imageSchema = z.object({
 
 function validateFile() {
   const maxUploadSize = 1024 * 1024;
-  const acceptedFileTypes = ["image/"];
+  const acceptedFilesTypes = ["image/"];
   return z
-    .instanceof(File)
+    .custom<File>() // intanceof(File) doesn't work in the browser
     .refine((file) => {
       return file.size <= maxUploadSize;
     }, "File size must be less than 1 MB")
     .refine((file) => {
-      return acceptedFileTypes.some((type) => file.type.startsWith(type));
+      console.log("file.type : ", file.type);
+      return acceptedFilesTypes.some((type) => file.type.startsWith(type));
     }, "File must be an image");
 }
 

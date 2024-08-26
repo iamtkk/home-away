@@ -1,6 +1,12 @@
 "use server";
 
-import { imageSchema, profileSchema, validateWithZodSchema } from "./schema";
+import {
+  profileSchema,
+  propertySchema,
+  validateWithZodSchema,
+  imageSchema,
+} from "./schema";
+// import { imageSchema } from "./imageSchema";
 import db from "./db";
 import { auth, clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -43,7 +49,7 @@ export const createProfileAction = async (
         hasProfile: true,
       },
     });
-    // return { message: "Profile created successfully" };
+    return { message: "Profile created successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -130,6 +136,11 @@ export const createPropertyAction = async (
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
   try {
-    const rawDate = Object.fromEntries(formData);
-  } catch (error) {}
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(propertySchema, rawData);
+    return { message: "Property created successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+  // redirect("/");
 };
