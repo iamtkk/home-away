@@ -17,7 +17,9 @@ export const validateWithZodSchema = <T>(
   schema: ZodSchema<T>,
   data: unknown
 ) => {
+  console.log("validateWithZodSchema data : ", data);
   const result = schema.safeParse(data);
+  console.log("validateWithZodSchema result : ", result);
 
   if (!result.success) {
     const errors = result.error.errors.map((error) => error.message);

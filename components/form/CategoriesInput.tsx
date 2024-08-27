@@ -10,13 +10,17 @@ import {
 
 const name = "category";
 
-const CategoriesInput = ({ defaultValue }: { defaultValue: string }) => {
+const CategoriesInput = ({ defaultValue }: { defaultValue?: string }) => {
   return (
     <div className="mb-2">
       <Label htmlFor={name} className="capitalize">
         Categories
       </Label>
-      <Select defaultValue={defaultValue || categories[0].label}>
+      <Select
+        defaultValue={defaultValue || categories[0].label}
+        name={name}
+        required
+      >
         <SelectTrigger id={name}>
           <SelectValue />
         </SelectTrigger>
@@ -24,10 +28,7 @@ const CategoriesInput = ({ defaultValue }: { defaultValue: string }) => {
           {categories.map((item) => {
             return (
               <SelectItem key={item.label} value={item.label}>
-                <span className="flex items-center gap-2">
-                  <item.icon />
-                  {item.label}
-                </span>
+                <span className="flex items-center gap-2">{item.label}</span>
               </SelectItem>
             );
           })}

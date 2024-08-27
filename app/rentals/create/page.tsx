@@ -33,7 +33,7 @@ const CreatePropertyPage = () => {
               defaultValue="Dream Gateway Awaits You Here"
             />
             <PriceInput />
-            <CategoriesInput defaultValue="cabin" />
+            <CategoriesInput />
           </div>
           <TextAreaInput
             name="description"
