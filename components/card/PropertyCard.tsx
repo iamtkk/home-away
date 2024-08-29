@@ -25,6 +25,7 @@ const PropertyCard = ({ property }: { property: PropertyCardProps }) => {
           <h3 className="text-sm font-semibold mt-1">
             {name.substring(0, 30)}
           </h3>
+          <PropertyRating inPage={false} propertyId={propertyId} />
         </div>
         <p className="text-sm mt-1 text-muted-foreground">
           {tagline.substring(0, 40)}
@@ -34,11 +35,11 @@ const PropertyCard = ({ property }: { property: PropertyCardProps }) => {
             <span className="font-semibold">{formatCurrency(price)} </span>
             night
           </p>
-          {/* country and flag */}
+          <CountryFlagAndName countryCode={country} />
         </div>
       </Link>
       <div className="absolute top-5 right-5 z-5">
-        {/* favorite toggle button */}
+        <FavoriteToggleButton propertyId={propertyId} />
       </div>
     </article>
   );
