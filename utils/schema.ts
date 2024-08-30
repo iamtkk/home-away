@@ -31,7 +31,7 @@ export const imageSchema = z.object({
 });
 
 function validateFile() {
-  const maxUploadSize = 1024 * 1024;
+  const maxUploadSize = 1024 * 1024 * 2;
   const acceptedFilesTypes = ["image/"];
   return z
     .custom<File>() // intanceof(File) doesn't work in the browser
