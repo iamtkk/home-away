@@ -1,24 +1,24 @@
-import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
-import PropertyRating from "@/components/card/PropertyRating";
-import Amenities from "@/components/properties/Amenities";
-import BookingCalendar from "@/components/properties/BookingCalendar";
-import BreadCrumbs from "@/components/properties/BreadCrumbs";
-import Description from "@/components/properties/Description";
-import ImageContainer from "@/components/properties/ImageContainer";
-import PropertyDetails from "@/components/properties/PropertyDetails";
-import ShareButton from "@/components/properties/ShareButton";
-import UserInfo from "@/components/properties/UserInfo";
-import PropertyReviews from "@/components/reviews/PropertyReviews";
-import SubmitReview from "@/components/reviews/SubmitReview";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { fetchPropertyDetails, findExistingReview } from "@/utils/actions";
-import dynamic from "next/dynamic";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import FavoriteToggleButton from '@/components/card/FavoriteToggleButton';
+import PropertyRating from '@/components/card/PropertyRating';
+import Amenities from '@/components/properties/Amenities';
+import BookingCalendar from '@/components/properties/BookingCalendar';
+import BreadCrumbs from '@/components/properties/BreadCrumbs';
+import Description from '@/components/properties/Description';
+import ImageContainer from '@/components/properties/ImageContainer';
+import PropertyDetails from '@/components/properties/PropertyDetails';
+import ShareButton from '@/components/properties/ShareButton';
+import UserInfo from '@/components/properties/UserInfo';
+import PropertyReviews from '@/components/reviews/PropertyReviews';
+import SubmitReview from '@/components/reviews/SubmitReview';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { fetchPropertyDetails, findExistingReview } from '@/utils/actions';
+import dynamic from 'next/dynamic';
+import { redirect } from 'next/navigation';
+import { auth } from '@clerk/nextjs/server';
 
 const DynamicMap = dynamic(
-  () => import("@/components/properties/PropertyMap"),
+  () => import('@/components/properties/PropertyMap'),
   {
     ssr: false,
     loading: () => <Skeleton className="h-[400px] w-full" />,
@@ -27,7 +27,7 @@ const DynamicMap = dynamic(
 
 const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
   const property = await fetchPropertyDetails(params.id);
-  if (!property) redirect("/");
+  if (!property) redirect('/');
   const { baths, bedrooms, beds, guests } = property;
   const detail = { baths, bedrooms, beds, guests };
   const firstName = property.profile.firstName;
@@ -65,7 +65,7 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
           <BookingCalendar />
         </div>
       </section>
-      <SubmitReview propertyId={property.id} />
+      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
       <PropertyReviews propertyId={property.id} />
     </section>
   );
