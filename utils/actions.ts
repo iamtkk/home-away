@@ -443,8 +443,8 @@ export const createBookingAction = async ({
         propertyId,
       },
     });
-    return { message: "create booking" };
   } catch (error) {
     return renderError(error);
   }
+  redirect("/bookings");
 };
