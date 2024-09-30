@@ -448,3 +448,60 @@ export const createBookingAction = async ({
   }
   redirect("/bookings");
 };
+
+export const fetchRentals = async () => {
+  const user = await getAuthUser();
+  const rentals = await db.property.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+      name: true,
+      price: true,
+    },
+  });
+
+  const rentalsWithBookingsSums = await Promise.all(
+    rentals.map(async (rental) => {
+      const totalNightSum = await db.booking.aggregate({
+        where: {
+          propertyId: rental.id,
+        },
+        _sum: {
+          totalNights: true,
+        },
+      });
+      const orderTotalSum = await db.booking.aggregate({
+        where: {
+          propertyId: rental.id,
+        },
+        _sum: {
+          orderTotal: true,
+        },
+      });
+      return {
+        ...rental,
+        totalNights: totalNightSum._sum.totalNights,
+        orderTotal: orderTotalSum._sum.orderTotal,
+      };
+    })
+  );
+};
+
+export const deleteRentalAction = async (prevState: { propertyId: string }) => {
+  const { propertyId } = prevState;
+  const user = await getAuthUser();
+  try {
+    await db.property.delete({
+      where: {
+        id: propertyId,
+        profileId: user.id,
+      },
+    });
+    revalidatePath("/rentals");
+    return { message: "Rental deleted successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
