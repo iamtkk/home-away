@@ -1,4 +1,4 @@
-"use server";
+'use server';
 
 import {
   profileSchema,
@@ -6,26 +6,26 @@ import {
   validateWithZodSchema,
   imageSchema,
   createReviewSchema,
-} from "./schema";
-import db from "./db";
-import { auth, clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { uploadImage } from "./supabase";
-import { string } from "zod";
-import { calculateTotals } from "./calculateTotals";
+} from './schema';
+import db from './db';
+import { auth, clerkClient, currentUser, getAuth } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { uploadImage } from './supabase';
+import { string } from 'zod';
+import { calculateTotals } from './calculateTotals';
 
 const getAuthUser = async () => {
   const user = await currentUser();
-  if (!user) throw new Error("You must be logged in to access this route");
-  if (!user.privateMetadata.hasProfile) redirect("/profile/create");
+  if (!user) throw new Error('You must be logged in to access this route');
+  if (!user.privateMetadata.hasProfile) redirect('/profile/create');
   return user;
 };
 
 const renderError = (error: unknown): { message: string } => {
   console.log(error);
   return {
-    message: error instanceof Error ? error.message : "An error occurred",
+    message: error instanceof Error ? error.message : 'An error occurred',
   };
 };
 
@@ -35,14 +35,14 @@ export const createProfileAction = async (
 ) => {
   try {
     const user = await currentUser();
-    if (!user) throw new Error("Please login to create a profile");
+    if (!user) throw new Error('Please login to create a profile');
     const rawData = Object.fromEntries(formData);
     const validatedFields = validateWithZodSchema(profileSchema, rawData);
     await db.profile.create({
       data: {
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
-        profileImage: user.imageUrl ?? "",
+        profileImage: user.imageUrl ?? '',
         ...validatedFields,
       },
     });
@@ -51,11 +51,11 @@ export const createProfileAction = async (
         hasProfile: true,
       },
     });
-    return { message: "Profile created successfully" };
+    return { message: 'Profile created successfully' };
   } catch (error) {
     return renderError(error);
   }
-  redirect("/");
+  redirect('/');
 };
 
 export const fetchProfileImage = async () => {
@@ -81,7 +81,7 @@ export const fetchProfile = async () => {
       clerkId: user.id,
     },
   });
-  if (!profile) redirect("/profile/create");
+  if (!profile) redirect('/profile/create');
   return profile;
 };
 
@@ -100,8 +100,8 @@ export const updateProfileAction = async (
       },
       data: validatedFields,
     });
-    revalidatePath("/profile");
-    return { message: "Profile updated successfully" };
+    revalidatePath('/profile');
+    return { message: 'Profile updated successfully' };
   } catch (error) {
     return renderError(error);
   }
@@ -113,7 +113,7 @@ export const updateProfileImageAction = async (
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
   try {
-    const image = formData.get("image") as File;
+    const image = formData.get('image') as File;
     const validatedFields = validateWithZodSchema(imageSchema, { image });
     const fullPath = await uploadImage(validatedFields.image);
 
@@ -125,8 +125,8 @@ export const updateProfileImageAction = async (
         profileImage: fullPath,
       },
     });
-    revalidatePath("/profile");
-    return { message: "Profile image updated successfully" };
+    revalidatePath('/profile');
+    return { message: 'Profile image updated successfully' };
   } catch (error) {
     return renderError(error);
   }
@@ -139,7 +139,7 @@ export const createPropertyAction = async (
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const file = formData.get("image") as File;
+    const file = formData.get('image') as File;
 
     const validatedFields = validateWithZodSchema(propertySchema, rawData);
     const validatedFile = validateWithZodSchema(imageSchema, { image: file });
@@ -152,15 +152,15 @@ export const createPropertyAction = async (
         profileId: user.id,
       },
     });
-    return { message: "Property created successfully" };
+    return { message: 'Property created successfully' };
   } catch (error) {
     return renderError(error);
   }
-  redirect("/");
+  redirect('/');
 };
 
 export const fetchProperties = async ({
-  search = "",
+  search = '',
   category,
 }: {
   search?: string;
@@ -173,13 +173,13 @@ export const fetchProperties = async ({
         {
           name: {
             contains: search,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           tagline: {
             contains: search,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
       ],
@@ -193,7 +193,7 @@ export const fetchProperties = async ({
       price: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
   return properties;
@@ -241,7 +241,7 @@ export const toggleFavoriteAction = async (prevState: {
     }
     await revalidatePath(pathname);
     return {
-      message: favoriteId ? "Removed from favorites" : "Added to favorites",
+      message: favoriteId ? 'Removed from favorites' : 'Added to favorites',
     };
   } catch (error) {
     return renderError(error);
@@ -305,7 +305,7 @@ export const createReviewAction = async (
       },
     });
     revalidatePath(`/property/${validatedFields.propertyId}`);
-    return { message: "Review summitted successfully" };
+    return { message: 'Review summitted successfully' };
   } catch (error) {
     return renderError(error);
   }
@@ -330,7 +330,7 @@ export const fetchPropertyReviews = async (propertyId: string) => {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
   return reviews;
@@ -367,17 +367,17 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
         profileId: user.id,
       },
     });
-    revalidatePath("/reviews");
-    return { message: "Review deleted successfully" };
+    revalidatePath('/reviews');
+    return { message: 'Review deleted successfully' };
   } catch (error) {
     return renderError(error);
   }
-  return { message: "delete  reviews" };
+  return { message: 'delete  reviews' };
 };
 
 export async function fetchPropertyRating(propertyId: string) {
   const result = await db.review.groupBy({
-    by: ["propertyId"],
+    by: ['propertyId'],
     _avg: {
       rating: true,
     },
@@ -425,7 +425,7 @@ export const createBookingAction = async ({
     },
   });
   if (!property) {
-    return { message: "Property not found" };
+    return { message: 'Property not found' };
   }
   const { orderTotal, totalNights } = calculateTotals({
     checkIn,
@@ -446,5 +446,44 @@ export const createBookingAction = async ({
   } catch (error) {
     return renderError(error);
   }
-  redirect("/bookings");
+  redirect('/bookings');
+};
+
+export const fetchBookings = async () => {
+  const user = await getAuthUser();
+  const bookings = await db.booking.findMany({
+    where: {
+      profileId: user.id,
+    },
+    include: {
+      property: {
+        select: {
+          id: true,
+          name: true,
+          country: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return bookings;
+};
+
+export const deleteBookingAction = async (prevState: { bookingId: string }) => {
+  const { bookingId } = prevState;
+  const user = await getAuthUser();
+  try {
+    const result = await db.booking.delete({
+      where: {
+        id: bookingId,
+        profileId: user.id,
+      },
+    });
+    revalidatePath('/bookings');
+    return { message: 'Booking deleted successfully' };
+  } catch (error) {
+    return renderError(error);
+  }
 };
