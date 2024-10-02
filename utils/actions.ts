@@ -657,7 +657,7 @@ export const fetchStats = async () => {
   };
 };
 
-export const fetchChartData = async () => {
+export const fetchChartsData = async () => {
   await getAdminUser();
   const date = new Date();
   date.setMonth(date.getMonth() - 6);
@@ -683,4 +683,5 @@ export const fetchChartData = async () => {
     }
     return total;
   }, [] as Array<{ date: string; count: number }>);
+  return bookingsPerMonth;
 };
